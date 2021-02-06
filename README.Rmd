@@ -1,0 +1,14 @@
+---
+title: "uwstaffshw"
+author: "Frederick Kim"
+date: "2/5/2021"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+rnorm(1)
+```
