@@ -9,6 +9,62 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
 ```{r}
-rnorm(1)
+# setups 1
+rm(list=ls())
+
+# Data Importation
+address <- "https://guide.wisc.edu/faculty/"
+mytext <- readLines(address)
+```
+
+check the structure of the raw data
+```{r}
+str(mytext)
+head(mytext)
+```
+
+Let's cheat here. Find the index of the list that contains the name "AARLI,LISA" and see the structure.
+```{r}
+name <- "AARLI,LISA"
+grep(name, mytext)
+```
+
+It's the 164th element! let's look at that one
+```{r}
+mytext[163] 
+```
+
+from what I understand, the staff memebers' information are stored 
+alphabetically and 164th element is information of staffs whose surname starts 
+with A 165th = B, 166th = C, ...
+
+I assume every personal data starts with <ul class=\"uw-people\">
+My hypothetical structure of personal data in the html data: (general)>
+<ul class=\"uw-people\">  <li> <p> Name of the instructor <br/>  position  <br/> program and year <br/></p></li><li><p> name of the instructor ...
+
+```{r}           
+staff_line <- strsplit(x = mytext, split = c('<ul class=\"uw-people\">'))
+
+uw_staffs <- list("name" = list(), "position" = list(), "department" = list(), "degree information" = list())
+
+
+
+for(idx in (163:188)){
+  dummy <- unlist(staff_line[[idx]])
+  
+  dummy2 <- strsplit(x = dummy, split = '<li><p>')
+
+  dummy3 <- strsplit(x = dummy2[[2]], split = '<br/>')
+  
+  for(info in dummy3){
+    uw_staffs$name <- c(uw_staffs$name, info[1])
+    uw_staffs$position <- c(uw_staffs$position, info[2])
+    uw_staffs$department <- c(uw_staffs$department, info[3])
+    uw_staffs$`degree information` <- c(uw_staffs$`degree information`, info[4])
+  }
+  
+}
+
 ```
